@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
   char inp[MAX_INPUT_SIZE];
   while ( (fgets(inp, MAX_INPUT_SIZE, stdin) != NULL)) {
     // check if input is given
-    if (fgets(inp, MAX_INPUT_SIZE, stdin) == "exit" ){
+    if (strcasecmp(inp , "exit") == 0){
       break;
     }
     inp[strlen(inp) - 1] = '\0';
