@@ -3,21 +3,28 @@
 #include <string.h>
 
 #define MAX_INPUT_SIZE 1024
+
 int main(int argc, char *argv[]) {
-  // Flush after every printf
-  setbuf(stdout, NULL);
-  // Capture the user's command in the "command" variable
+    setbuf(stdout, NULL);  // Disable buffering for immediate output
+    
     printf("$ ");
-  char inp[MAX_INPUT_SIZE];
-  while ( (fgets(inp, MAX_INPUT_SIZE, stdin) != NULL)) {
-    // check if input is given
-    inp[strlen(inp) - 1] = '\0';
-    if (strcmp(inp , "exit") == 0){
-      break;
+    char inp[MAX_INPUT_SIZE];
+
+    while (fgets(inp, MAX_INPUT_SIZE, stdin) != NULL) {
+        // Remove trailing newline safely
+        size_t len = strlen(inp);
+        if (len > 0 && inp[len - 1] == '\n') {
+            inp[len - 1] = '\0';
+        }
+
+        // Exit condition
+        if (strcmp(inp, "exit") == 0) {
+            break;
+        }
+
+        printf("%s: command not found\n", inp);
+        printf("$ ");
     }
-    printf("%s: command not found\n", inp);
-    printf("$ ");
-    fflush(stdout);
-  }
-  return 0;
+
+    return 0;
 }
