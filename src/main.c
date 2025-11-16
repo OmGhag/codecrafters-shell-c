@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
             return 0;   // exits with code 0
         }
         
-        if (strncmp(inp, "echo", 5 ) == 0){
+        if (strncmp(inp, "echo", 4 ) == 0){
           printf("%s\n", inp + 5);
           printf("$ ");
         }else{
