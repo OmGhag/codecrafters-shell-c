@@ -11,10 +11,11 @@ int main(int argc, char *argv[]) {
   char inp[MAX_INPUT_SIZE];
   while ( (fgets(inp, MAX_INPUT_SIZE, stdin) != NULL)) {
     // check if input is given
-    if (strcasecmp(inp , "exit\n") == 0){
+    inp[strlen(inp) - 1] = '\0';
+    inp[strcspn(inp, "\n")] = 0;
+    if (strcasecmp(inp , "exit") == 0){
       break;
     }
-    inp[strlen(inp) - 1] = '\0';
     printf("%s: command not found\n", inp);
     printf("$ ");
   }
