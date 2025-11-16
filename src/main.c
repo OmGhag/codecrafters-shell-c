@@ -21,10 +21,14 @@ int main(int argc, char *argv[]) {
         if (strncmp(inp, "exit", 4) == 0) {
             return 0;   // exits with code 0
         }
-
-
-        printf("%s: command not found\n", inp);
-        printf("$ ");
+        
+        if (strncmp(inp, "echo ", 6 ) == 0){
+          printf("%s\n", inp + 5);
+          printf("$ ");
+        }else{
+          printf("%s: command not found\n", inp);
+          printf("$ ");
+        }
     }
 
     return 0;
