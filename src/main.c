@@ -12,7 +12,6 @@ int main(int argc, char *argv[]) {
   while ( (fgets(inp, MAX_INPUT_SIZE, stdin) == NULL)) {
     // check if input is given
     inp[strlen(inp) - 1] = '\0';
-    inp[strcspn(inp, "\n")] = 0;
     if (strcmp(inp , "exit") == 0){
       break;
     }
