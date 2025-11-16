@@ -5,6 +5,8 @@
 int main(int argc, char *argv[]) {
   // Flush after every printf
   setbuf(stdout, NULL);
+  // Capture the user's command in the "command" variable
+    printf("$ ");
   const int max_size = 1024;
   char inp[max_size];
   while (fgets(inp, max_size, stdin) != NULL) {
