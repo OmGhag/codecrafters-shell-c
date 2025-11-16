@@ -9,9 +9,13 @@ int main(int argc, char *argv[]) {
   // Capture the user's command in the "command" variable
     printf("$ ");
   char inp[MAX_INPUT_SIZE];
-  while ( (fgets(inp, MAX_INPUT_SIZE, stdin) == NULL) || strcmp(inp, "exit\n") == 0) {
+  while ( (fgets(inp, MAX_INPUT_SIZE, stdin) == NULL)) {
     // check if input is given
     inp[strlen(inp) - 1] = '\0';
+    inp[strcspn(inp, "\n")] = 0;
+    if (strcmp(inp , "exit") == 0){
+      break;
+    }
     printf("%s: command not found\n", inp);
     printf("$ ");
     fflush(stdout);
