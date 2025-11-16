@@ -18,9 +18,10 @@ int main(int argc, char *argv[]) {
         }
 
         // Exit condition
-        if (strcmp(inp, "exit") == 0) {
-            break;
+        if (strncmp(inp, "exit", 4) == 0) {
+            return 0;   // exits with code 0
         }
+
 
         printf("%s: command not found\n", inp);
         printf("$ ");
