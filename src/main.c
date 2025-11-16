@@ -5,19 +5,14 @@
 int main(int argc, char *argv[]) {
   // Flush after every printf
   setbuf(stdout, NULL);
-  while (1)
-  {
-    //Capture the user's command in the "command" variable
-  printf("$ ");
+  const int max_size = 1024;
+  char inp[max_size];
+  while (fgets(inp, max_size, stdin) != NULL) {
 
-  char command[1024];
-   fgets(command, sizeof(command), stdin);
-   // Remove trailing newline character if present
-   command[strcspn(command, "\n")] = '\0';
-
-   //Print the "<command>": "command not found" message
-   printf("%s: command not found\n", command);
-
-  }  
+    // check if input is given
+    inp[strlen(inp) - 1] = '\0';
+    printf("%s: command not found\n", inp);
+    printf("$ ");
+  }
   return 0;
 }
