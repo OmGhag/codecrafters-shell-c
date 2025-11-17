@@ -97,7 +97,7 @@ bool check_input(InputBuffer *input_buffer) {
     if (is_valid) {
       printf("%s is a shell builtin\n", arg);
     } else {
-      printf("%s: command not found\n", arg);
+      printf("%s: not found\n", arg);
     }
   } else {
     input_buffer->valid_input = false;
