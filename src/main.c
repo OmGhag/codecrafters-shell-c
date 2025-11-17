@@ -31,6 +31,12 @@ InputBuffer Create_Input_Buffer() {
   return input_buffer;
 }
 
+
+void free_input_buffer(InputBuffer *input_buffer) {
+  free(input_buffer->input);
+  input_buffer->input = NULL;
+}
+
 CommandArgs Create_Command_Args(InputBuffer *input_buffer) {
   CommandArgs command_args;
   char *token = strtok(input_buffer->input, " ");
@@ -98,11 +104,6 @@ bool check_input(InputBuffer *input_buffer) {
   }
 
   return input_buffer->valid_input;
-}
-
-void free_input_buffer(InputBuffer *input_buffer) {
-  free(input_buffer->input);
-  input_buffer->input = NULL;
 }
 
 void print_input_buffer(InputBuffer *input_buffer) {
