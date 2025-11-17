@@ -95,9 +95,9 @@ bool check_input(InputBuffer *input_buffer) {
     }
     bool is_valid = Is_Command_Valid(arg, valid_commands, sizeof(valid_commands) / sizeof(valid_commands[0]));
     if (is_valid) {
-      printf("%s is a shell builtin.\n", arg);
+      printf("%s is a shell builtin\n", arg);
     } else {
-      printf("%s is not a shell builtin.\n", arg);
+      printf("%s is not a shell builtin\n", arg);
     }
   } else {
     input_buffer->valid_input = false;
