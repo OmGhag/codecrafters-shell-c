@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #define MAX_BUFFER_SIZE 128
 #define MAX_ARGS 64
@@ -55,9 +56,30 @@ bool Is_Command_Valid(const char *command, const char *valid_commands[], size_t 
   for (size_t i = 0; i < valid_command_count; i++) {
     if (strcmp(command, valid_commands[i]) == 0) {
       return true;
-    }
+    }    
   }
   return false;
+}
+
+char *search_executable_in_path(const char *arg) {
+  char *path_env = getenv("PATH");
+  if (path_env == NULL) {
+    return NULL;
+  }
+
+  char *path_copy = strdup(path_env);
+  char *token = strtok(path_copy, ":");
+  while (token != NULL) {
+    char full_path[MAX_BUFFER_SIZE];
+    snprintf(full_path, sizeof(full_path), "%s/%s", token, arg);
+    if (access(full_path, X_OK) == 0) {
+      free(path_copy);
+      return strdup(full_path);
+    }
+    token = strtok(NULL, ":");
+  }
+  free(path_copy);
+  return NULL;
 }
 
 uint8_t capture_input(InputBuffer *input_buffer) {
@@ -97,12 +119,17 @@ bool check_input(InputBuffer *input_buffer) {
     if (is_valid) {
       printf("%s is a shell builtin\n", arg);
     } else {
-      printf("%s: not found\n", arg);
-    }
-  } else {
-    input_buffer->valid_input = false;
+      char *exe_path = search_executable_in_path(arg);
+      if (exe_path != NULL) {
+        printf("%s is %s\n", arg, exe_path);
+        free(exe_path);
+      }else{
+        printf("%s: not found\n", arg);
+        input_buffer->valid_input = true;
+      }
+    
   }
-
+  }
   return input_buffer->valid_input;
 }
 
