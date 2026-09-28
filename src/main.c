@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/wait.h>
+#include <limits.h>
 
 #define MAX_BUFFER_SIZE 128
 #define MAX_ARGS 64
@@ -48,6 +50,7 @@ CommandArgs Create_Command_Args(InputBuffer *input_buffer) {
     token = strtok(NULL, " ");
   }
   command_args.arg_count = index;
+  command_args.args[index] = NULL;
 
   return command_args;
 }
@@ -70,7 +73,7 @@ char *search_executable_in_path(const char *arg) {
   char *path_copy = strdup(path_env);
   char *token = strtok(path_copy, ":");
   while (token != NULL) {
-    char full_path[MAX_BUFFER_SIZE];
+    char full_path[PATH_MAX];
     snprintf(full_path, sizeof(full_path), "%s/%s", token, arg);
     if (access(full_path, X_OK) == 0) {
       free(path_copy);
@@ -93,6 +96,10 @@ uint8_t capture_input(InputBuffer *input_buffer) {
 bool check_input(InputBuffer *input_buffer) {
   CommandArgs command_args = Create_Command_Args(input_buffer);
   char *command = command_args.args[0];
+  if (command == NULL){
+    input_buffer -> valid_input = false;
+    return false;
+  }
   if (strcmp(command, "echo") == 0) {
     input_buffer->valid_input = true;
     for (size_t i = 1; i < command_args.arg_count; i++) {
