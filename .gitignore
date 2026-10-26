@@ -56,3 +56,7 @@ vcpkg_installedsrc/shell
 src/output/
 src/.vscode/
 .vscode/
+src/shell
+src/output/
+src/.vscode/
+.vscode/
