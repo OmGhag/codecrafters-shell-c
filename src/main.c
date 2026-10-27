@@ -77,6 +77,7 @@ bool Is_Command_Valid(const char *command, const char *valid_commands[], size_t 
 char *search_executable_in_path(const char *arg)
 {
   char *path_env = getenv("PATH");
+  fprintf(stderr, "[debug] PATH=%s\n", path_env ? path_env : "(null)");
   if (path_env == NULL)
   {
     return NULL;
