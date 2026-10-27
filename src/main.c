@@ -167,7 +167,7 @@ bool check_input(InputBuffer *input_buffer)
     }
     else
     {
-      arg = command_args.args[1];
+      arg = command_args.args[0];
       bool is_valid = Is_Command_Valid(arg, valid_commands, sizeof(valid_commands) / sizeof(valid_commands[0]));
       if (is_valid)
       {
