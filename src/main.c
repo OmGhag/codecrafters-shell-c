@@ -1,21 +1,20 @@
-
+#include <limits.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <sys/wait.h>
 #include <sys/types.h>
-#include <limits.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
 #define MAX_BUFFER_SIZE 128
 #define MAX_ARGS 64
-#define MAX_ARG_SIZE 16
 
 extern char **environ;
 
 static const char *valid_commands[] = {"echo", "exit", "type"};
+
 typedef struct
 {
   char *input;
@@ -78,12 +77,18 @@ bool Is_Command_Valid(const char *command, const char *valid_commands[], size_t 
 char *search_executable_in_path(const char *arg)
 {
   char *path_env = getenv("PATH");
+  fprintf(stderr, "[debug] PATH=%s\n", path_env ? path_env : "(null)");
   if (path_env == NULL)
   {
     return NULL;
   }
 
   char *path_copy = strdup(path_env);
+  if (path_copy == NULL)
+  {
+    return NULL;
+  }
+
   char *token = strtok(path_copy, ":");
   while (token != NULL)
   {
@@ -102,9 +107,18 @@ char *search_executable_in_path(const char *arg)
 
 uint8_t capture_input(InputBuffer *input_buffer)
 {
-  fgets(input_buffer->input, MAX_BUFFER_SIZE, stdin);
-  input_buffer->input_size = strlen(input_buffer->input) - 1;
-  input_buffer->input[input_buffer->input_size] = '\0';
+  if (fgets(input_buffer->input, MAX_BUFFER_SIZE, stdin) == NULL)
+  {
+    input_buffer->input_size = 0;
+    return 0;
+  }
+
+  size_t len = strlen(input_buffer->input);
+  while (len > 0 && (input_buffer->input[len - 1] == '\n' || input_buffer->input[len - 1] == '\r'))
+  {
+    input_buffer->input[--len] = '\0';
+  }
+  input_buffer->input_size = (uint8_t)len;
 
   return input_buffer->input_size;
 }
@@ -133,11 +147,13 @@ bool check_input(InputBuffer *input_buffer)
 {
   CommandArgs command_args = Create_Command_Args(input_buffer);
   char *command = command_args.args[0];
+
   if (command == NULL)
   {
     input_buffer->valid_input = false;
     return false;
   }
+
   if (strcmp(command, "echo") == 0)
   {
     input_buffer->valid_input = true;
@@ -160,7 +176,6 @@ bool check_input(InputBuffer *input_buffer)
   else if (strcmp(command, "type") == 0)
   {
     input_buffer->valid_input = true;
-    char *arg;
     if (command_args.arg_count < 2)
     {
       printf("type: missing argument\n");
@@ -193,8 +208,8 @@ bool check_input(InputBuffer *input_buffer)
     char *exe_path = search_executable_in_path(command);
     if (exe_path != NULL)
     {
-      execute_external_command(exe_path, command_args.args);
       input_buffer->valid_input = true;
+      execute_external_command(exe_path, command_args.args);
       free(exe_path);
     }
     else
@@ -202,6 +217,7 @@ bool check_input(InputBuffer *input_buffer)
       input_buffer->valid_input = false;
     }
   }
+
   return input_buffer->valid_input;
 }
 
@@ -222,11 +238,7 @@ int main(void)
   while (capture_input(&input_buffer))
   {
     check_input(&input_buffer);
-    if (input_buffer.valid_input)
-    {
-      ;
-    }
-    else
+    if (!input_buffer.valid_input)
     {
       printf("%s: command not found\n", input_buffer.input);
     }
