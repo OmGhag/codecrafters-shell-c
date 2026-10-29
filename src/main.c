@@ -205,7 +205,7 @@ bool check_input(InputBuffer *input_buffer)
   }
   else
   {
-    char *exe_path = search_executable_in_path(command);
+    char *exe_path = search_executable_in_path(arg);
     if (exe_path != NULL)
     {
       input_buffer->valid_input = true;
